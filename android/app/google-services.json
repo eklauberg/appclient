@@ -1,0 +1,93 @@
+{
+  "project_info": {
+    "project_number": "654611912375",
+    "firebase_url": "https://beermatic-8da34-default-rtdb.firebaseio.com",
+    "project_id": "beermatic-8da34",
+    "storage_bucket": "beermatic-8da34.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:654611912375:android:b81965bece3394ee4e1f32",
+        "android_client_info": {
+          "package_name": "com.choppstation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "654611912375-74hgjqc0o2ntnrpu29tocad4r0d1h507.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.choppstation",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "654611912375-8j78jpvi9dnmkea45ajsakmtas3t00ao.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.choppstation",
+            "certificate_hash": "a35e10e9c9fd3029680e279f84c15c8da2f86e0f"
+          }
+        },
+        {
+          "client_id": "654611912375-kpfk5hrgbj455d5mu2kt382p93b0v3if.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.choppstation",
+            "certificate_hash": "5f08a0b0d14d8bdf93aa393e8a43199c4701564e"
+          }
+        },
+        {
+          "client_id": "654611912375-fq7pgn28lqkricdb303tluvg2pkfsb6d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2fZJG-w2IkISGpowtX_xFVcXej-mHu1U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "654611912375-fq7pgn28lqkricdb303tluvg2pkfsb6d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:654611912375:android:25d63510ac22a7514e1f32",
+        "android_client_info": {
+          "package_name": "com.choppstationadm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "654611912375-fq7pgn28lqkricdb303tluvg2pkfsb6d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2fZJG-w2IkISGpowtX_xFVcXej-mHu1U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "654611912375-fq7pgn28lqkricdb303tluvg2pkfsb6d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

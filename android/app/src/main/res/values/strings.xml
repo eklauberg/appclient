@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">CHOPP STATION</string>
+    <string name="service_name">ChoppStation</string>
+    <string name="card_title">ChoppStation</string>
+    <string name="servicedesc">APDU Service</string>
+    <string name="aiddescription">NFC HCE</string>
+    <string name="facebook_app_id">4306537812769079</string>
+    <string name="fb_login_protocol_scheme">fb4306537812769079</string>
+    <string name="facebook_client_token">dc5b49452295221211bcecb13be227a8</string>
+</resources>

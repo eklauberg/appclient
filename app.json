@@ -1,0 +1,12 @@
+{
+  "name": "ChoppStation",
+  "displayName": "ChoppStation",
+  "expo": {
+    "name": "ChoppStation",
+    "slug": "ChoppStation",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
