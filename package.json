@@ -5,7 +5,7 @@
     "ios": "react-native run-ios",
     "web": "expo start --web",
     "start": "react-native start",
-    "build:release": "react-native build-android --mode=release"
+    "build:release": "react-native run-android --variant=release"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
