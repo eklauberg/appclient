@@ -48,3 +48,18 @@ allprojects {
         maven { url 'https://www.jitpack.io' }
     }
 }
+subprojects {
+    if (project.name.contains('react-native-nfc-hce')) {
+        buildscript {
+            repositories {
+                // jcenter()
+                google()
+                maven { url "https://dl.bintray.com/android/android-tools/"  }
+            }
+
+            dependencies {
+                classpath 'com.android.tools.build:gradle:3.2.0' // Atualize conforme necessário
+            }
+        }
+    }
+}

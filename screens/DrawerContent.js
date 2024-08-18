@@ -1,25 +1,19 @@
-import React,  { useEffect, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView,} from 'react-native';
-import {
-    useTheme,
-    Avatar,
-    Title,
-    Caption,
-    Paragraph,
-    Drawer,
-    Text,
-    TouchableRipple, 
-    Switch
-} from 'react-native-paper';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
     DrawerContentScrollView,
     DrawerItem
 } from '@react-navigation/drawer';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View, } from 'react-native';
+import {
+    Avatar,
+    Drawer,
+    Text,
+    Title,
+    TouchableRipple
+} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ModalFeedBack from './ModalFeedBack';
-import {useNavigation} from '@react-navigation/native';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 
 

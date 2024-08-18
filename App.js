@@ -1,18 +1,15 @@
-import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { Text } from 'react-native';
 import * as Font from 'expo-font';
-import { AppLoading } from 'expo';
+import React, { useState } from 'react';
 
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
-import PushNotification from "react-native-push-notification";
-import {Importance} from 'react-native-push-notification';
+import PushNotification, { Importance } from "react-native-push-notification";
 
 
-
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserContextProvider from './contexts/UserContext';
 import MainStack from './stacks/MainStack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const fetchFonts = () => {
@@ -26,7 +23,7 @@ const fetchFonts = () => {
 PushNotification.configure({
   // (optional) Called when Token is generated (iOS and Android)
   onRegister: function (token) {
-    AsyncStorage.setItem('fcm_token', token.token );
+    AsyncStorage.setItem('fcm_token', token.token);
   },
 
   // (required) Called when a remote is received or opened, or local notification is opened
@@ -34,12 +31,12 @@ PushNotification.configure({
     console.log("NOTIFICATION:", notification);
 
     // process the notification
-    PushNotification.localNotification( {
-      ...notification, 
-      channelId: 'default-channel-id', 
+    PushNotification.localNotification({
+      ...notification,
+      channelId: 'default-channel-id',
       largeIcon: 'ic_launcher', // (optional) default: "ic_launcher"
-      smallIcon: 'ic_notification',  
-      soundName: "default" 
+      smallIcon: 'ic_notification',
+      soundName: "default"
     });
 
     // (required) Called when a remote is received or opened, or local notification is opened
@@ -55,7 +52,7 @@ PushNotification.configure({
   },
 
   // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
-  onRegistrationError: function(err) {
+  onRegistrationError: function (err) {
     console.error(err.message, err);
   },
 
@@ -107,8 +104,8 @@ export default () => {
 
   return (
     <UserContextProvider>
-      <NavigationContainer>
-        <MainStack />
+      <NavigationContainer>        
+          <MainStack />
       </NavigationContainer>
     </UserContextProvider>
   );

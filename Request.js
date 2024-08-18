@@ -1,23 +1,23 @@
-import axios from 'axios';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from 'axios';
 
+import { BASE_API } from './BASE_API';
 
-const baseUrl = "https://app-api.beermatic.com.br/api/";
 const apiClient = axios.create({
-    baseURL: baseUrl,
+    baseURL: BASE_API,
 });
 
 apiClient.defaults.headers['Content-Type'] = 'application/json';
 apiClient.defaults.headers['Accept'] = 'application/json';
 
-apiClient.interceptors.request.use( async ( request) =>{
-   let token = await AsyncStorage.getItem('token');
-   //console.log( token );
-   if( token ){
+apiClient.interceptors.request.use(async (request) => {
+    let token = await AsyncStorage.getItem('token');
+    //console.log( token );
+    if (token) {
         request.headers['Authorization'] = `Bearer ${token}`
-   }
-   return request;
-}, ( error )=>{
+    }
+    return request;
+}, (error) => {
     Promise.reject(error);
 });
 

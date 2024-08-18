@@ -1,33 +1,34 @@
-import React, {useState, useEffect} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
-import * as yup from "yup";
-import moment from "moment";
-import {StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Alert, SafeAreaView} from 'react-native';
-import Header from "./Header";
-import Footer from "./Footer";
-import {Formik} from "formik";
-import ErrorMessage from './Partials/ErrorMessage';
-import {TextInputMask} from 'react-native-masked-text';
-import EditarFotoCard from "./EditarFotoCard";
-import httpClient from '../Request';
-import Icon from "react-native-vector-icons/MaterialIcons";
-import ModalFeedBack from "./ModalFeedBack";
-import Loader from "./Loader";
-import BottomSheet from 'reanimated-bottom-sheet';
-import Animated from 'react-native-reanimated';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import { useNavigation } from "@react-navigation/native";
+import { Formik } from "formik";
+import moment from "moment";
+import React, { useState } from "react";
+import { Alert, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { TextInputMask } from 'react-native-masked-text';
+import Animated from 'react-native-reanimated';
+import Icon from "react-native-vector-icons/MaterialIcons";
+import BottomSheet from 'reanimated-bottom-sheet';
+import * as yup from "yup";
+import httpClient from '../Request';
+import EditarFotoCard from "./EditarFotoCard";
+import Footer from "./Footer";
+import Header from "./Header";
+import Loader from "./Loader";
+import ModalFeedBack from "./ModalFeedBack";
+import ErrorMessage from './Partials/ErrorMessage';
 
-export default function App(props){
+export default function App(props) {
 
     const navigation = useNavigation();
-    
-    const [loading, setLoading ] = useState();
-    const [modalVisible, setModalVisible ] = useState(false);
+
+    const [loading, setLoading] = useState();
+    const [modalVisible, setModalVisible] = useState(false);
     const [modalSuccess, setModalSuccess] = useState(false)
-    const [ user, setUser ] = useState({});
-    const [ validationErrors, setValidationErrors] = useState([]);
+    const [modalExluir, setModalExcluir] = useState(false)
+    const [user, setUser] = useState({});
+    const [validationErrors, setValidationErrors] = useState([]);
 
     const bs = React.createRef();
     const fall = new Animated.Value(1);
@@ -40,16 +41,16 @@ export default function App(props){
 
         launchCamera(options, async response => {
             if (response.assets) {
-                await uploadFoto( response.assets[0] );
+                await uploadFoto(response.assets[0]);
             }
-            
-        })  
+
+        })
 
         bs.current.snapTo(1)
-      
+
     }
-    
-      const choosePhotoFromLibrary = () => {
+
+    const choosePhotoFromLibrary = () => {
         const options = {
             noData: true,
             selectionLimit: 1
@@ -57,71 +58,70 @@ export default function App(props){
 
         launchImageLibrary(options, async response => {
             if (response.assets) {
-                await uploadFoto( response.assets[0] );
-                
+                await uploadFoto(response.assets[0]);
+
             }
-            console.log( response);
 
-        })  
+        })
         bs.current.snapTo(1)
-      }
+    }
 
-      const renderInner = () => (
-    
-        <View style={styles.panel}>            
-          <ScrollView>
-            <View style={{alignItems: 'center'}}>
-                <Text style={styles.panelTitle}>Enviar Foto</Text>
-                <Text style={styles.panelSubtitle}>Escolha sua foto</Text>
-            </View>
-            <TouchableOpacity style={styles.panelButton} onPress={ takePhotoFromCamera }>
-                <Text style={styles.panelButtonTitle}>Usar a Camera</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.panelButton} onPress={choosePhotoFromLibrary}>
-                <Text style={styles.panelButtonTitle}>Escolher da Galeria de Fotos</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.panelButton}
-                onPress={() => bs.current.snapTo(1)}>
-                <Text style={styles.panelButtonTitle}>Cancelar</Text>
-            </TouchableOpacity>
-          </ScrollView>
+    const renderInner = () => (
+
+        <View style={styles.panel}>
+            <ScrollView>
+                <View style={{ alignItems: 'center' }}>
+                    <Text style={styles.panelTitle}>Enviar Foto</Text>
+                    <Text style={styles.panelSubtitle}>Escolha sua foto</Text>
+                </View>
+                <TouchableOpacity style={styles.panelButton} onPress={takePhotoFromCamera}>
+                    <Text style={styles.panelButtonTitle}>Usar a Camera</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.panelButton} onPress={choosePhotoFromLibrary}>
+                    <Text style={styles.panelButtonTitle}>Escolher da Galeria de Fotos</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.panelButton}
+                    onPress={() => bs.current.snapTo(1)}>
+                    <Text style={styles.panelButtonTitle}>Cancelar</Text>
+                </TouchableOpacity>
+            </ScrollView>
         </View>
-      );
-    
-      const renderHeader = () => (
+    );
+
+    const renderHeader = () => (
         <View style={styles.header}>
-          <View style={styles.panelHeader}>
-            <View style={styles.panelHandle} />
-          </View>
+            <View style={styles.panelHeader}>
+                <View style={styles.panelHandle} />
+            </View>
         </View>
-      );
-    
-      
+    );
 
-    const loadUserFromStorage = async ()=>{
+
+
+    const loadUserFromStorage = async () => {
         try {
             const user = await AsyncStorage.getItem('user');
             //console.log( 'Perfil',user )
 
-            setUser( JSON.parse( user ) );
-          } catch(e) {
+            setUser(JSON.parse(user));
+        } catch (e) {
             console.log(e);
-          }  
+        }
 
     }
 
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-          loadUserFromStorage()
+            loadUserFromStorage()
         });
-    
+
         // Return the function to unsubscribe from the event so it gets removed on unmount
         return unsubscribe;
-      }, [navigation]);
+    }, [navigation]);
 
-    
-    
+
+
 
     const handleErrorResponse = async (response) => {
 
@@ -136,7 +136,7 @@ export default function App(props){
                 })
             });
 
-            setModalVisible(true );
+            setModalVisible(true);
 
             return;
         }
@@ -152,64 +152,76 @@ export default function App(props){
 
 
 
-    const uploadFoto = async ( photo )=>{
-        setLoading( true );
+    const uploadFoto = async (photo) => {
+        setLoading(true);
         try {
             let formData = new FormData();
 
-            formData.append("image",{
+            formData.append("image", {
                 name: photo.fileName,
                 type: photo.type,
                 uri: Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
             })
 
-            const response = await httpClient.post('/user-profile-picture', formData ,{
+            const response = await httpClient.post('/user-profile-picture', formData, {
                 headers: {
-                    'Content-Type' : 'multipart/form-data',
+                    'Content-Type': 'multipart/form-data',
                 }
             });
 
-            console.log( "=========================================================");
-            console.log( "RESPONSE", response.data );
-            console.log( "=========================================================");
-            if( response.status === 200 )
-            {
-                AsyncStorage.setItem("user", JSON.stringify( response.data.user ) );
+            console.log("=========================================================");
+            console.log("RESPONSE", response.data);
+            console.log("=========================================================");
+            if (response.status === 200) {
+                AsyncStorage.setItem("user", JSON.stringify(response.data.user));
 
-                setUser( response.data.user );
+                setUser(response.data.user);
             }
         } catch (error) {
-            console.log( error );
-        } finally{
-            setLoading( false );
+            console.log(error);
+        } finally {
+            setLoading(false);
         }
     };
+
+    const handleDelete = async () => {
+        try {
+            let response = await httpClient.delete(`/user/${user.id}`);
+
+            if (response.status === 200) {
+                await AsyncStorage.clear()
+                navigation.navigate('Login')
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     const handleSubmit = async (values) => {
 
         try {
-            setLoading( true );
+            setLoading(true);
             let payload;
-            
-            if(values.senha){
+
+            if (values.senha) {
                 payload = {
-                    name : values.name,
-                    data_nascimento : values.nascimento,
-                    celular : values.celular,
+                    name: values.name,
+                    data_nascimento: values.nascimento,
+                    celular: values.celular,
                     email: values.email,
                     senha: values.senha,
                     senha_confirmation: values.confirmar_senha
                 };
             } else {
                 payload = {
-                    name : values.name,
-                    data_nascimento : values.nascimento,
-                    celular : values.celular,
+                    name: values.name,
+                    data_nascimento: values.nascimento,
+                    celular: values.celular,
                     email: values.email,
                 };
             }
 
-            let response = await httpClient.put('/user',  payload );
+            let response = await httpClient.put('/user', payload);
             console.log('wfwfwfwwf', payload)
 
             if (response.status === 200) {
@@ -224,7 +236,7 @@ export default function App(props){
                     uuid: response.data.uuid,
                 }
 
-                await AsyncStorage.setItem('user', JSON.stringify( userAtt ) )
+                await AsyncStorage.setItem('user', JSON.stringify(userAtt))
                 //Alert.alert("Perfil Atualizado", "Perfil Atualizado com Sucesso");
                 setModalSuccess(true)
             }
@@ -239,10 +251,10 @@ export default function App(props){
             }
 
             Alert.alert('Erro', error.message);
-        }finally {
-            setLoading( false );
+        } finally {
+            setLoading(false);
         }
-    }    
+    }
 
     const initialValues = {
         name: user.name,
@@ -261,191 +273,230 @@ export default function App(props){
             let data = moment(dataString, 'DD/MM/YYYY');
             return data.isValid() && data.isBefore();
         }),
-        senha : yup.string().min(8),
-        celular : yup.string().required().min(14),
+        senha: yup.string().min(8),
+        celular: yup.string().required().min(14),
         confirmar_senha: yup.string().min(8)
     });
 
 
 
-        return (
-            <SafeAreaView style={{flex: 1}}>
-                <ModalFeedBack title={'Atualizar Perfil'} visible={modalVisible} setModalVisible={setModalVisible}>
-                    <Icon name={"error"} size={60} color="red"/>
-                    <ScrollView style={{ width: '90%', height: '30%', marginTop: '2%',}}>
-                        {validationErrors.map((value, index) => {
-                            return (
-                                <Text key={index} style={styles.error_message}>
-                                    {value}
-                                </Text>
-                            );
-                        })}
-                    </ScrollView>
-                    <View style={{marginTop: '5%', width: '80%', alignItems: 'center',}}>
-                        <TouchableOpacity
-                            style={{ backgroundColor: '#e1c897', justifyContent: 'center', borderRadius: 10, height: 40, width: '55%',}}
-                            onPress={() => {
-                                setValidationErrors([])
-                                setModalVisible(false)
+    return (
+        <SafeAreaView style={{ flex: 1 }}>
+            <ModalFeedBack title={'Atualizar Perfil'} visible={modalVisible} setModalVisible={setModalVisible}>
+                <Icon name={"error"} size={60} color="red" />
+                <ScrollView style={{ width: '90%', height: '30%', marginTop: '2%', }}>
+                    {validationErrors.map((value, index) => {
+                        return (
+                            <Text key={index} style={styles.error_message}>
+                                {value}
+                            </Text>
+                        );
+                    })}
+                </ScrollView>
+                <View style={{ marginTop: '5%', width: '80%', alignItems: 'center', }}>
+                    <TouchableOpacity
+                        style={{ backgroundColor: '#e1c897', justifyContent: 'center', borderRadius: 10, height: 40, width: '55%', }}
+                        onPress={() => {
+                            setValidationErrors([])
+                            setModalVisible(false)
+                        }}
+                    >
+                        <Text style={{ fontSize: 22, color: 'black', textAlign: 'center', fontWeight: 'bold' }}>Fechar</Text>
+                    </TouchableOpacity>
+                </View>
+            </ModalFeedBack>
+
+            <ModalFeedBack title={'Atualizar Perfil'} visible={modalSuccess} setModalVisible={setModalSuccess}>
+                <Icon style={{ marginTop: '5%' }} name={"check-circle"} size={40} color="green" />
+                <View style={{ marginTop: '5%' }}>
+                    <Text style={{ color: 'black', fontSize: 20, fontWeight: 'bold', textAlign: 'center', }}>Dados</Text>
+                    <Text style={{ color: 'black', fontSize: 20, fontWeight: 'bold', textAlign: 'center', }}>Atualizados</Text>
+                </View>
+                <View style={{ marginTop: '10%', width: '80%', alignItems: 'center', }}>
+                    <TouchableOpacity
+                        style={{ backgroundColor: '#304a22', justifyContent: 'center', borderRadius: 10, height: 40, width: '55%', }}
+                        onPress={() => setModalSuccess(false)}
+                        key={'TouchableOpacity1'}
+                    >
+                        <Text style={{ fontSize: 22, color: 'white', textAlign: 'center', fontWeight: 'bold' }}> Concluir </Text>
+                    </TouchableOpacity>
+                </View>
+
+            </ModalFeedBack>
+
+            <ModalFeedBack title={'Exluir Perfil'} visible={modalExluir} setModalVisible={setModalExcluir}>
+                <Icon style={{ marginTop: '5%' }} name={"info"} size={40} color="#8c1313" />
+                <View style={{ marginTop: '5%', marginHorizontal: '10%' }}>
+                    <Text style={{ color: 'black', fontSize: 18, textAlign: 'center', }}>Você está prestes a excluir seu usuário. Esta ação é irreversível. </Text>
+                    <Text style={{ color: 'black', fontSize: 20, fontWeight: 'bold', textAlign: 'center', }}>Deseja continuar?</Text>
+                </View>
+                <View style={{ marginTop: '10%', width: '80%', justifyContent: 'space-between', flexDirection: 'row' }}>
+                    <TouchableOpacity
+                        style={{ backgroundColor: '#304a22', marginHorizontal: 5, justifyContent: 'center', borderRadius: 10, height: 40, flex: 1 }}
+                        onPress={() => setModalExcluir(false)}
+                        key={'TouchableOpacity1'}
+                    >
+                        <Text style={{ fontSize: 22, color: 'white', textAlign: 'center', fontWeight: 'bold' }}> Cancelar </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{ backgroundColor: '#8c1313', marginHorizontal: 5, justifyContent: 'center', borderRadius: 10, height: 40, flex: 1 }}
+                        onPress={() => {
+                            setModalExcluir(false)
+                            handleDelete()
+                        }
+                        }
+                        key={'TouchableOpacity1'}
+                    >
+                        <Text style={{ fontSize: 22, color: 'white', textAlign: 'center', fontWeight: 'bold' }}>Continuar</Text>
+                    </TouchableOpacity>
+                </View>
+            </ModalFeedBack>
+
+            <Header title={"Editar Conta"} />
+
+            <KeyboardAwareScrollView>
+                <BottomSheet
+                    ref={bs}
+                    snapPoints={[530, 0]}
+                    renderContent={renderInner}
+                    renderHeader={renderHeader}
+                    initialSnap={1}
+                    callbackNode={fall}
+                    enabledGestureInteraction={true}
+                    enabledContentTapInteraction={false}
+                />
+                <View style={styles.container}>
+                    <View style={styles.image_container}>
+                        <EditarFotoCard user={user} bs={bs} />
+                    </View>
+                    <View style={styles.form_container}>
+                        <Formik
+                            enableReinitialize={true}
+                            initialValues={initialValues}
+                            onSubmit={(values, options) => {
+                                handleSubmit(values);
                             }}
+                            validationSchema={ValidationsSchema}
                         >
-                            <Text style={{fontSize:22,color:'black',textAlign:'center',fontWeight:'bold'}}>Fechar</Text>
-                        </TouchableOpacity>
-                    </View> 
-                </ModalFeedBack>
 
-                <ModalFeedBack title={'Atualizar Perfil'} visible={modalSuccess} setModalVisible={setModalSuccess}>
-                    <Icon style={{marginTop: '5%'}} name={"check-circle"} size={40} color="green"/>
-                    <View style={{marginTop: '5%'}}>
-                        <Text style={{ color: 'black', fontSize: 20, fontWeight: 'bold', textAlign: 'center', }}>Dados</Text>
-                        <Text style={{ color: 'black', fontSize: 20, fontWeight: 'bold', textAlign: 'center', }}>Atualizados</Text>
-                    </View>
-                    <View style={{marginTop: '10%', width: '80%', alignItems: 'center',}}>
-                        <TouchableOpacity
-                            style={{ backgroundColor: '#304a22', justifyContent: 'center', borderRadius: 10, height: 40, width: '55%',}}
-                            onPress={() =>  setModalSuccess(false)}
-                            key={'TouchableOpacity1'}
-                        >
-                            <Text style={{fontSize:22,color:'white',textAlign:'center',fontWeight:'bold'}}> Concluir </Text>
-                        </TouchableOpacity>
-                    </View>
+                            {(props) => (
 
-                </ModalFeedBack>
-
-                <Header title={"Editar Conta"}/>
-
-                <KeyboardAwareScrollView>
-                    <BottomSheet
-                        ref={bs}
-                        snapPoints={[530, 0]}
-                        renderContent={renderInner}
-                        renderHeader={renderHeader}
-                        initialSnap={1}
-                        callbackNode={fall}
-                        enabledGestureInteraction={true}
-                        enabledContentTapInteraction={false}
-                    />
-                    <View style={styles.container}>
-                        <View style={styles.image_container}>
-                            <EditarFotoCard user={user} bs={bs}/>
-                        </View>
-                        <View style={styles.form_container}>
-                            <Formik
-                                enableReinitialize={true}
-                                initialValues={initialValues}
-                                onSubmit={ ( values, options)=>{
-                                    handleSubmit( values );
-                                } }
-                                validationSchema={ValidationsSchema}
-                            >
-
-                                {(props) => (
-
-                                    <View>
-                                        <View style={styles.inputContainer}>
-                                            <Text style={styles.label}>Nome Completo</Text>
-                                            <TextInput
-                                                style={styles.input}
-                                                placeholderTextColor="black"
-                                                autoCorrect={false}
-                                                value={props.values.name}
-                                                onChangeText={props.handleChange('name')}
-                                                onBlur={props.handleBlur('name')}
-                                            />
-                                            {props.errors.nome && <ErrorMessage message={props.errors.nome}/>}
-                                        </View>
-                                        <View style={styles.inputContainer}>
-                                            <Text style={styles.label}>Data de Nascimento</Text>
-                                            <TextInputMask
-                                                type="custom"
-                                                options={{mask: '99/99/9999'}}
-                                                style={styles.input}
-                                                placeholderTextColor="white"
-                                                keyboardType="number-pad"
-                                                autoCorrect={false}
-                                                value={props.values.nascimento}
-                                                onChangeText={props.handleChange('nascimento')}
-                                                onBlur={props.handleBlur('nascimento')}
-                                            />
-                                            {props.errors.nascimento && props.touched.nascimento &&
-                                            <ErrorMessage message={props.errors.nascimento}/>}
-                                        </View>
-                                        <View style={styles.inputContainer}>
-                                            <Text style={styles.label}>E-mail</Text>
-                                            <TextInput
-                                                style={styles.input}
-                                                placeholderTextColor="white"
-                                                autoCorrect={false}
-                                                keyboardType="email-address"
-                                                value={props.values.email}
-                                                onChangeText={props.handleChange('email')}
-                                                onBlur={props.handleBlur('email')}
-                                            />
-                                            {props.errors.email && props.touched.email &&
-                                            <ErrorMessage message={props.errors.email}/>}
-                                        </View>
-                                        <View style={styles.inputContainer}>
-                                            <Text style={styles.label}>Celular (DDD)</Text>
-                                            <TextInputMask
-                                                type="cel-phone"
-                                                style={styles.input}
-                                                placeholderTextColor="white"
-                                                keyboardType="number-pad"
-                                                autoCorrect={false}
-                                                value={props.values.celular}
-                                                onChangeText={props.handleChange('celular')}
-                                                onBlur={props.handleBlur('celular')}
-                                            />
-                                            {props.errors.celular && props.touched.celular &&
-                                            <ErrorMessage message={props.errors.celular}/>}
-                                        </View>
-                                        <View style={styles.inputContainer}>
-                                            <Text style={styles.label}>Senha</Text>
-                                            <TextInput
-                                                style={styles.input}
-                                                placeholderTextColor="white"
-                                                autoCorrect={false}
-                                                value={props.values.senha}
-                                                onChangeText={props.handleChange('senha')}
-                                                onBlur={props.handleBlur('senha')}
-                                                secureTextEntry={true}
-                                            />
-                                            {props.errors.senha && props.touched.senha &&
-                                            <ErrorMessage message={props.errors.senha}/>}
-                                        </View>
-                                        <View style={styles.inputContainer}>
-                                            <Text style={styles.label}>Confirmar Senha</Text>
-                                            <TextInput
-                                                style={styles.input}
-                                                placeholderTextColor="white"
-                                                autoCorrect={false}
-                                                value={props.values.confirmar_senha}
-                                                onChangeText={props.handleChange('confirmar_senha')}
-                                                onBlur={props.handleBlur('confirmar_senha')}
-                                                secureTextEntry={true}
-                                            />
-                                            {props.errors.confirmar_senha && props.touched.confirmar_senha &&
-                                            <ErrorMessage message={props.errors.confirmar_senha}/>}
-                                        </View>
-                                        <View style={styles.buttonContainer}>
-                                            <TouchableOpacity
-                                                onPress={ props.handleSubmit }
-                                                style={styles.botaoProximo}>
-                                                <Text style={styles.textoBotao}>Salvar</Text>
-                                            </TouchableOpacity>
-                                        </View>
+                                <View>
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.label}>Nome Completo</Text>
+                                        <TextInput
+                                            style={styles.input}
+                                            placeholderTextColor="black"
+                                            autoCorrect={false}
+                                            value={props.values.name}
+                                            onChangeText={props.handleChange('name')}
+                                            onBlur={props.handleBlur('name')}
+                                        />
+                                        {props.errors.nome && <ErrorMessage message={props.errors.nome} />}
                                     </View>
-                                )
-                                }
-                            </Formik>
-                        </View>
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.label}>Data de Nascimento</Text>
+                                        <TextInputMask
+                                            type="custom"
+                                            options={{ mask: '99/99/9999' }}
+                                            style={styles.input}
+                                            placeholderTextColor="white"
+                                            keyboardType="number-pad"
+                                            autoCorrect={false}
+                                            value={props.values.nascimento}
+                                            onChangeText={props.handleChange('nascimento')}
+                                            onBlur={props.handleBlur('nascimento')}
+                                        />
+                                        {props.errors.nascimento && props.touched.nascimento &&
+                                            <ErrorMessage message={props.errors.nascimento} />}
+                                    </View>
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.label}>E-mail</Text>
+                                        <TextInput
+                                            style={styles.input}
+                                            placeholderTextColor="white"
+                                            autoCorrect={false}
+                                            keyboardType="email-address"
+                                            value={props.values.email}
+                                            onChangeText={props.handleChange('email')}
+                                            onBlur={props.handleBlur('email')}
+                                        />
+                                        {props.errors.email && props.touched.email &&
+                                            <ErrorMessage message={props.errors.email} />}
+                                    </View>
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.label}>Celular (DDD)</Text>
+                                        <TextInputMask
+                                            type="cel-phone"
+                                            style={styles.input}
+                                            placeholderTextColor="white"
+                                            keyboardType="number-pad"
+                                            autoCorrect={false}
+                                            value={props.values.celular}
+                                            onChangeText={props.handleChange('celular')}
+                                            onBlur={props.handleBlur('celular')}
+                                        />
+                                        {props.errors.celular && props.touched.celular &&
+                                            <ErrorMessage message={props.errors.celular} />}
+                                    </View>
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.label}>Senha</Text>
+                                        <TextInput
+                                            style={styles.input}
+                                            placeholderTextColor="white"
+                                            autoCorrect={false}
+                                            value={props.values.senha}
+                                            onChangeText={props.handleChange('senha')}
+                                            onBlur={props.handleBlur('senha')}
+                                            secureTextEntry={true}
+                                        />
+                                        {props.errors.senha && props.touched.senha &&
+                                            <ErrorMessage message={props.errors.senha} />}
+                                    </View>
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.label}>Confirmar Senha</Text>
+                                        <TextInput
+                                            style={styles.input}
+                                            placeholderTextColor="white"
+                                            autoCorrect={false}
+                                            value={props.values.confirmar_senha}
+                                            onChangeText={props.handleChange('confirmar_senha')}
+                                            onBlur={props.handleBlur('confirmar_senha')}
+                                            secureTextEntry={true}
+                                        />
+                                        {props.errors.confirmar_senha && props.touched.confirmar_senha &&
+                                            <ErrorMessage message={props.errors.confirmar_senha} />}
+                                    </View>
+                                    <View style={styles.buttonContainer}>
+                                        <TouchableOpacity
+                                            onPress={props.handleSubmit}
+                                            style={styles.botaoProximo}>
+                                            <Text style={styles.textoBotao}>Salvar</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            )
+                            }
+                        </Formik>
                     </View>
 
-                </KeyboardAwareScrollView>
-                <Footer />
-                { loading && <Loader />}
-            </SafeAreaView>
-        );
+                    <View style={styles.form_container}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setModalExcluir(true)
+                            }}
+                            style={styles.botaoExcluir}>
+                            <Text style={{...styles.textoBotao, color: 'white'}}>Excluir</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
+
+            </KeyboardAwareScrollView>
+            <Footer />
+            {loading && <Loader />}
+        </SafeAreaView>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -514,6 +565,13 @@ const styles = StyleSheet.create({
         marginTop: '3%',
         marginBottom: '10%'
     },
+    botaoExcluir: {
+        backgroundColor: '#8c1313',
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 45
+    },
     textoBotao: {
         color: 'black',
         fontWeight: "bold",
@@ -536,32 +594,25 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 10,
     },
-    
+
     panel: {
         padding: 20,
         backgroundColor: '#FFFFFF',
         paddingTop: 20,
-        paddingBottom: 100,
-        // borderTopLeftRadius: 20,
-        // borderTopRightRadius: 20,
-        // shadowColor: '#000000',
-        // shadowOffset: {width: 0, height: 0},
-        // shadowRadius: 5,
-        // shadowOpacity: 0.4,
+        paddingBottom: 100
     },
     header: {
         backgroundColor: '#FFFFFF',
         shadowColor: '#333333',
-        shadowOffset: {width: -1, height: -3},
+        shadowOffset: { width: -1, height: -3 },
         shadowRadius: 2,
         shadowOpacity: 0.7,
-        // elevation: 5,
         paddingTop: 20,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
     },
     panelHeader: {
-        
+
     },
     panelHandle: {
         width: 40,

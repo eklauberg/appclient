@@ -7,6 +7,7 @@ import android.net.Uri;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
 import com.zoontek.rnpermissions.RNPermissionsPackage;
 import studio.bb.rnlib.RNHcePackage;
 import studio.bb.rnlib.RNHcePackage;

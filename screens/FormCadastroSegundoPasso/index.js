@@ -198,6 +198,7 @@ export default function App({route}) {
                 sexo: generoField,
                 receber_cupons: checkedQueroReceber,
                 accepted_terms: checkedConcordo,
+                type: 'consumer'
             }
 
             let response = await httpClient.post('/register', payload );
@@ -208,7 +209,7 @@ export default function App({route}) {
 
         } catch (error) {
             let response = error.response;
-
+            
             if (response !== undefined) {
                 handleErrorResponse(response);
                 return;

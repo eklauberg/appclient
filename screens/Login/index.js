@@ -90,7 +90,8 @@ export default function App() {
             let payload = {
                 email : values.email,
                 password : values.senha,
-                device_name : device
+                device_name : device,
+                type: 'consumer'
             };
 
             let firebaseToken = await AsyncStorage.getItem('fcm_token');

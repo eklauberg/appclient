@@ -1,86 +1,82 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { add } from 'react-native-reanimated';
-import { useNavigation } from '@react-navigation/native';
-var jsonRetornoDesenho;
-
-const BASE_API = 'https://app-api.beermatic.com.br/api/';
-
-var $tentatisvas = 0;
+import { BASE_API } from './BASE_API';
 
 export default {
 
-    user: async () => { 
+    user: async () => {
         const token = await AsyncStorage.getItem('token');
-    
-        const req = await fetch(`${BASE_API}/user/`, { 
-            
-            method: 'GET', 
+
+        const req = await fetch(`${BASE_API}/user/`, {
+
+            method: 'GET',
             headers: {
                 Accept: 'application/json',
-        
+
                 'Authorization': `Bearer ${token}`
-            
+
             },
-        
+
         });
         try {
-            const json = await req.json(); 
+            const json = await req.json();
             console.log('Haniel ', json)
             return json;
         } catch (_err) {
-            
-    
+
+
             return 'error'
-        
+
         }
 
     },
 
 
-    registerUser: async (json) => { 
+    registerUser: async (json) => {
 
-            const req = await fetch(`${BASE_API}/register`, { 
-                
-            method: 'POST', 
+        const req = await fetch(`${BASE_API}/register`, {
+
+            method: 'POST',
             headers: {
                 Accept: 'application/json',
-               'Content-Type': 'application/json',
-               
+                'Content-Type': 'application/json',
+
             },
             body: JSON.stringify(json)
         });
         try {
-            const json = await req.json(); 
-           
+            const json = await req.json();
+
             return json;
         } catch (_err) {
-            
-       
+
+            console.error(_err)
             return 'error'
-           
+
         }
 
-    
+
     },
 
-    login : async (email,password) => {
-        var dados =  new Object();;
-        dados.email =  email ;
-        dados.password =  password ;
-        const req = await fetch(`${BASE_API}/login`, { 
-    
-            method: 'POST', 
+    login: async (email, password) => {
+        console.log(BASE_API)
+        var dados = new Object();;
+        dados.email = email;
+        dados.password = password;
+        const req = await fetch(`${BASE_API}/login`, {
+
+            method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-               
-                
+
+
             },
-            
+
             body: JSON.stringify(dados)
         });
-     
-        const json = await req.json();        
+
+        const json = await req.json();
+        console.log(11111111111111111111111, json)
         return json;
     },
 
@@ -97,7 +93,7 @@ export default {
             },
             body: JSON.stringify(json)
         });
-        try{
+        try {
             const json = await req.json();
             return json;
         } catch (_err) {
@@ -106,152 +102,152 @@ export default {
 
     },
 
-    consultarSaldo: async (json) => { 
+    consultarSaldo: async (json) => {
 
-        const req = await fetch(`${BASE_API}/balance/sidfosiuasdfoasdfuasdgfiasdsdsdsdf`, { 
-            
-        method: 'POST', 
-        headers: {
-            Accept: 'application/json',
-           'Content-Type': 'application/json',
-           
-        },
+        const req = await fetch(`${BASE_API}/balance/sidfosiuasdfoasdfuasdgfiasdsdsdsdf`, {
+
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+
+            },
             body: JSON.stringify(json)
         });
         try {
-            const json = await req.json(); 
-        
+            const json = await req.json();
+
             return json;
         } catch (_err) {
-            
+
 
             return 'error'
-        
+
         }
 
     },
-    pontoDeVenda: async (json) => { 
+    pontoDeVenda: async (json) => {
 
-        const req = await fetch(`${BASE_API}/pos/38593134-3b9e-48e3-9ac0-d4ee6af75fd5`, { 
-            
-        method: 'GET', 
-        headers: {
-            Accept: 'application/json',
-           'Content-Type': 'application/json',
-           
-        },
-        body: JSON.stringify(json)
+        const req = await fetch(`${BASE_API}/pos/38593134-3b9e-48e3-9ac0-d4ee6af75fd5`, {
+
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+
+            },
+            body: JSON.stringify(json)
         });
         try {
-            const json = await req.json(); 
-        
+            const json = await req.json();
+
             return json;
         } catch (_err) {
-            
-    
+
+
             return 'error'
-        
+
         }
     },
 
-    pontoDeVenda: async (json) => { 
+    pontoDeVenda: async (json) => {
 
-        const req = await fetch(`${BASE_API}/pos/38593134-3b9e-48e3-9ac0-d4ee6af75fd5`, { 
-            
-        method: 'POST', 
-        headers: {
-            Accept: 'application/json',
-           'Content-Type': 'application/json',
-           
-        },
-        body: JSON.stringify(json)
+        const req = await fetch(`${BASE_API}/pos/38593134-3b9e-48e3-9ac0-d4ee6af75fd5`, {
+
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+
+            },
+            body: JSON.stringify(json)
         });
         try {
-            const json = await req.json(); 
-        
+            const json = await req.json();
+
             return json;
         } catch (_err) {
-            
-    
+
+
             return 'error'
-        
+
         }
 
 
     },
-    termosDeUso: async () => { 
+    termosDeUso: async () => {
 
-        const req = await fetch(`${BASE_API}/termos-de-uso`, { 
-            
-        method: 'GET', 
-        headers: {
-            Accept: 'application/json',
-           'Content-Type': 'application/json',
-           
-        },
-        //body: JSON.stringify(json)
+        const req = await fetch(`${BASE_API}/termos-de-uso`, {
+
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+
+            },
+            //body: JSON.stringify(json)
         });
         try {
-            const json = await req.json(); 
-        
+            const json = await req.json();
+
             return json;
         } catch (_err) {
-            
-    
+
+
             return 'error'
-        
+
         }
 
 
     },
 
-    pagamentos: async (json) => { 
+    pagamentos: async (json) => {
 
-        const req = await fetch(`${BASE_API}/user/account/hsdfasodfiuhasdfhasdfohasdfisauhfdausdfhasodfiasdhfauosdfau/transactions`, { 
-            
-        method: 'GET', 
-        headers: {
-            Accept: 'application/json',
-           'Content-Type': 'application/json',
-           
-        },
-        body: JSON.stringify(json)
+        const req = await fetch(`${BASE_API}/user/account/hsdfasodfiuhasdfhasdfohasdfisauhfdausdfhasodfiasdhfauosdfau/transactions`, {
+
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+
+            },
+            body: JSON.stringify(json)
         });
         try {
-            const json = await req.json(); 
-        
+            const json = await req.json();
+
             return json;
         } catch (_err) {
-            
-    
+
+
             return 'error'
-        
+
         }
 
 
     },
 
-    
-   
+
+
     socialLogin: async (json, social) => {
-        
+
         const req = await fetch(`${BASE_API}/social-login/${social}`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
-               'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(json)
         });
-        try{
+        try {
             const json = await req.json();
 
             return json;
-        } catch (_err){
+        } catch (_err) {
             return 'error'
         }
     }
 
-    
+
 
 };

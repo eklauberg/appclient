@@ -47,7 +47,8 @@ class CheckCadastro extends Component {
     try {
 
       const payload = {
-        "cpf" : this.state.cpf
+        "cpf" : this.state.cpf,
+        "type": 'consumer'
       };
 
       const response = await httpClient.post('/user-exists', payload );
