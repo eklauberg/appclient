@@ -40,13 +40,13 @@ export default function App({route}) {
             values: values
         });
     }
-
+    console.log(route.params)
     const initialValues = {
-        nome : '',
+        nome : route.params.nome,
         cpf : route.params.cpf,
         email: '',
         telefone : '',
-        nascimento : '',
+        nascimento : route.params.data_de_nascimento,
     };
 
 

@@ -12,11 +12,12 @@ import ImageResizeMode from "react-native/Libraries/Image/ImageResizeMode";
 import React from "react";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { TextInputMask } from "react-native-masked-text";
-import { Component} from 'react';
+import { Component } from 'react';
 import { cpf } from 'cpf-cnpj-validator';
 import httpClient from '../../Request';
 import { normalize } from "react-native-elements";
 import { replace } from "formik";
+import { check } from "react-native-permissions";
 
 
 class CheckCadastro extends Component {
@@ -24,7 +25,7 @@ class CheckCadastro extends Component {
     super(props);
     this.state = {
       cpf: "",
-      loading : false
+      loading: false
     };
   }
 
@@ -33,51 +34,55 @@ class CheckCadastro extends Component {
   };
 
   handleClickButtonProximoTouched = async () => {
-    if( this.state.cpf === '' || this.state.cpf === null ){
-        Alert.alert("CPF", "O Campo CPF precisa sem preenchido");
-        return;
+    if (this.state.cpf === '' || this.state.cpf === null) {
+      Alert.alert("CPF", "O Campo CPF precisa sem preenchido");
+      return;
     }
 
-    if( ! cpf.isValid( this.state.cpf ) ){
+    if (!cpf.isValid(this.state.cpf)) {
       Alert.alert("CPF Inválido", "Forneça um CPF Válido");
       return;
     }
 
-    await this.setLoading( true );
+    await this.setLoading(true);
     try {
 
       const payload = {
-        "cpf" : this.state.cpf,
+        "cpf": this.state.cpf,
         "type": 'consumer'
       };
 
-      const response = await httpClient.post('/user-exists', payload );
+      const response = await httpClient.post('/user-maior-idade', payload);
 
-      /**
-       * Existe Usuário com o CPF informado
-       */
-      if( response.status === 200 && response.data.cpf === "Existente"){
-        Alert.alert("CPF Cadastrado", "Já existe uma conta para o CPF informado. Tente fazer login ou recuperar a sua senha");
-        this.props.navigation.navigate("Login" );
+      if(response.data.response_code === 'ok') {
+        this.props.navigation.navigate("form-cadastro-primeiro-passo", {
+          cpf: this.state.cpf,
+          data_de_nascimento: response.data.data_de_nascimento,
+          nome: response.data.nome
+        });
       }
 
-    }catch ( error ){
+      check()
 
+    } catch (error) {
       let response = error.response;
 
-      if( response.status === 422){
-        console.log( response.data );
+      if (response.status === 409) {
+        Alert.alert("CPF Cadastrado", "Já existe uma conta para o CPF informado. Tente fazer login ou recuperar a sua senha");
+        this.props.navigation.navigate("Login");
       }
 
-      if( response.status === 404 )
-      {
-          this.props.navigation.navigate("form-cadastro-primeiro-passo", {
-            cpf: this.state.cpf,
-          });
+      if (response.status === 401) {
+        Alert.alert("Não Autorizado", response.data.status);
       }
 
-    }finally {
-      await this.setLoading( false );
+      if (response.status === 500) {
+        Alert.alert("Não Autorizado", 'Erro ao se comunicar com o servidor');
+        console.log(error)
+      }
+
+    } finally {
+      await this.setLoading(false);
     }
   };
 
@@ -88,19 +93,19 @@ class CheckCadastro extends Component {
     });
   };
 
-  setLoading = async ( loading )=>{
-      this.setState({
-        ...this.state,
-        loading : loading
-      })
+  setLoading = async (loading) => {
+    this.setState({
+      ...this.state,
+      loading: loading
+    })
   }
 
   render() {
     return (
       <SafeAreaView style={styles.background}>
-        
-        <View style={ styles.header_container }>
-          <View style={ styles.goBack }>
+
+        <View style={styles.header_container}>
+          <View style={styles.goBack}>
             <TouchableOpacity
               onPress={() => this.chamaTelaEscolhaLoginCadastro()}
               key={"TouchableOpacity1"}
@@ -110,9 +115,9 @@ class CheckCadastro extends Component {
           </View>
         </View>
 
-        <View style={ styles.body_container }>
+        <View style={styles.body_container}>
           <ScrollView>
-            <View style={ styles.containerLogo }>
+            <View style={styles.containerLogo}>
               <Image
                 style={{
                   width: 130,
@@ -120,15 +125,15 @@ class CheckCadastro extends Component {
                 }}
                 source={require("../../imagens/logos/logo-chopp.png")}
                 resizeMode={ImageResizeMode.contain}
-                />
-              <Text style={ styles.titulos }>DISCOVER {"\n"} THE FINEST BREWS</Text>
+              />
+              <Text style={styles.titulos}>DISCOVER {"\n"} THE FINEST BREWS</Text>
             </View>
 
-            <View style={ styles.container }>
-              <Text style={ styles.subTitulo }>Cadastro</Text>
+            <View style={styles.container}>
+              <Text style={styles.subTitulo}>Cadastro</Text>
 
-              <View style={ styles.box }>
-                <Text style={ styles.cpf }>CPF</Text>
+              <View style={styles.box}>
+                <Text style={styles.cpf}>CPF</Text>
 
                 <TextInputMask
                   style={styles.input}
@@ -142,9 +147,9 @@ class CheckCadastro extends Component {
                   style={styles.botaoProximo}
                   disabled={this.state.loading}
                 >
-                  
-                  { this.state.loading ? 
-                    <ActivityIndicator animating={this.state.loading} size="small" color="#990000"/>
+
+                  {this.state.loading ?
+                    <ActivityIndicator animating={this.state.loading} size="small" color="#990000" />
                     :
                     <Text style={styles.textoProximo}>Próximo</Text>
                   }
