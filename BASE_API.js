@@ -1,1 +1,1 @@
-export const BASE_API = 'http://172.20.1.107:8000/api';
+export const BASE_API = 'https://app-api.beermatic.com.br/api/';
