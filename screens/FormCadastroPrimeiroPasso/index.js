@@ -7,7 +7,7 @@ import {
     StyleSheet,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import HeaderCadastro from '../Partials/HeaderCadastro';
 import {TextInputMask} from 'react-native-masked-text';
 import { Formik} from "formik";
@@ -35,12 +35,11 @@ export default function App({route}) {
     }
 
     let navigateToFormCadastroSegundoPasso = async ( values ) => {
-
         navigation.navigate('form-cadastro-segundo-passo', {
             values: values
         });
     }
-    console.log(route.params)
+    
     const initialValues = {
         nome : route.params.nome,
         cpf : route.params.cpf,
@@ -64,16 +63,13 @@ export default function App({route}) {
 
     });
 
-    useEffect(() => {
-         
-    }, [])
-
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#1d1d1d',}}>
             <HeaderCadastro handleButtonBackTouched={ handleButtonBackTouched } />
             <KeyboardAwareScrollView behavior="position" >
                 <ScrollView style={styles.form_container}>
                     <Formik
+                        enableReinitialize={true}
                         initialValues={initialValues}
                         onSubmit={ handleSubmit }
                         validationSchema={ValidationsSchema}
@@ -89,8 +85,8 @@ export default function App({route}) {
                                         autoCorrect={false}
                                         autoCapitalize={'words'}
                                         value={props.values.nome}
-                                        onChangeText={ props.handleChange('nome')}
-                                        onBlur={props.handleBlur('nome')}
+                                        // onChangeText={ props.handleChange('nome')}
+                                        // onBlur={props.handleBlur('nome')}
                                     />
                                     { props.errors.nome && <ErrorMessage  message={props.errors.nome}/>}
                                 </View>
@@ -101,8 +97,8 @@ export default function App({route}) {
                                         keyboardType="number-pad"
                                         type={'cpf'}
                                         value={props.values.cpf}
-                                        onChangeText={props.handleChange('cpf')}
-                                        onBlur={props.handleBlur('cpf')}
+                                        // onChangeText={props.handleChange('cpf')}
+                                        // onBlur={props.handleBlur('cpf')}
                                     />
                                     { props.errors.cpf && <ErrorMessage  message={props.errors.cpf}/> }
                                 </View>
@@ -116,8 +112,8 @@ export default function App({route}) {
                                         keyboardType="number-pad"
                                         autoCorrect={false}
                                         value={props.values.nascimento}
-                                        onChangeText={props.handleChange('nascimento')}
-                                        onBlur={props.handleBlur('nascimento')}
+                                        // onChangeText={props.handleChange('nascimento')}
+                                        // onBlur={props.handleBlur('nascimento')}
                                     />
                                     { props.errors.nascimento && props.touched.nascimento && <ErrorMessage  message={props.errors.nascimento}/> }
                                 </View>
